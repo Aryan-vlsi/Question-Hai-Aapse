@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valentine?</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: 'Pacifico', cursive;
+  background: url("background.jpg") center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: #b30059;
+}
+
+.page {
+  text-align: center;
+  display: none;
+  padding: 20px;
+}
+
+.page.active {
+  display: block;
+}
+
+.main-text {
+  font-size: clamp(28px, 6vw, 56px);
+  line-height: 1.3;
+  animation: float 3s ease-in-out infinite;
+}
+
+.small {
+  font-size: 12px;
+  opacity: 0.4;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.buttons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  position: relative;
+  z-index: 5;
+}
+
+button {
+  font-family: 'Pacifico', cursive;
+  border: none;
+  border-radius: 999px; /* 👈 forces perfect pill shape */
+  padding: 16px 36px;
+  font-size: 22px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+#yesBtn {
+  position: relative;
+  z-index: 10;
+}
+
+<button id="noBtn">no sorry 🥺</button>
+<button id="noClone">no sorry 🥺</button>
+
+
+#yesBtn {
+  background: linear-gradient(45deg, #b153d7, #9929ea);
+  color: white;
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.7)}
+
+#yesBtn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(255, 77, 109, 0.9);}
+
+#noBtn {
+  background: #f2c1d1;
+  color: #6b0036;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#yesBtn {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(45deg, #ff4d6d, #ff758f); /* 🔥 bright gradient */
+  color: white; /* text color */
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.7); /* glow */
+  border-radius: 999px; /* pill shape */
+  padding: 16px 36px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+#noBtn {
+  top: 60px;
+}
+
+.buttons {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  position: relative;
+}
+
+#yesBtn {
+  z-index: 5;
+}
+
+#noBtn {
+  z-index: 5;
+}
+
+#noClone {
+  position: fixed;
+  left: -999px;
+  top: -999px;
+  z-index: 999;
+  transform: scale(1);
+  background: #f2c1d1;
+  color: #6b0036;
+  border-radius: 999px;
+  padding: 16px 36px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+
+.buttons {
+  height: 160px;
+}
+
+.gif {
+  max-width: 90%;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="/Valentine/music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PAGE 1 -->
+<div class="page active" id="page1">
+  <div class="main-text" id="typeText"></div>
+
+  <div class="buttons" id="buttons" style="opacity:0;">
+    <button id="yesBtn">🔥 YES!!!!</button>
+    <button id="noBtn">no sorry 🥺</button>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page2">
+  <div class="main-text">
+    GUYS!!! 😭🔥<br>
+    DID YOU SEE IT??<br>
+    SHE SAID YES!!!! 💖💖💖
+  </div>
+  <img class="gif" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWRwa3ZkNWo4bWwyN2IzY2tqcDZudzFhaHVwbjB2a2hla2RzYzAzcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wbugAxF6ShM3mL7KFJ/giphy.gif">
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="page3">
+  <div class="main-text">
+    Oh no you don’t. 😼
+  </div>
+  <img class="gif" src="https://tenor.com/en-IN/view/sus-cat-sus-cat-suspicious-cat-suspicious-gif-14666859353905804588">
+</div>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const music = document.getElementById("bgMusic");
+
+let noScale = 1;
+let yesScale = 1;
+
+// Start background music on first mouse move or touch
+function startMusicOnce() {
+  music.volume = 0.10;
+  music.play().catch(() => {});
+  
+  // Remove event listeners after first trigger
+  document.removeEventListener("mousemove", startMusicOnce);
+  document.removeEventListener("touchstart", startMusicOnce);
+}
+
+// Listen for first mouse movement OR touch
+document.addEventListener("mousemove", startMusicOnce, { once: true });
+document.addEventListener("touchstart", startMusicOnce, { once: true });
+
+function startMusicOnce() {
+  music.volume = 0;
+  music.play().catch(() => {});
+  let vol = 0;
+  const fadeIn = setInterval(() => {
+    vol += 0.01;
+    if (vol >= 0.10) clearInterval(fadeIn);
+    music.volume = vol;
+  }, 50);
+  document.removeEventListener("mousemove", startMusicOnce);
+  document.removeEventListener("touchstart", startMusicOnce);
+}
+
+// NO button dodge
+function moveNo() {
+  // Switch to fixed positioning ONCE
+  if (noBtn.style.position !== "fixed") {
+    const rect = noBtn.getBoundingClientRect();
+    noBtn.style.position = "fixed";
+    noBtn.style.left = rect.left + "px";
+    noBtn.style.top = rect.top + "px";
+  }
+
+  const padding = 20;
+
+  const btnWidth = noBtn.offsetWidth * noScale;
+  const btnHeight = noBtn.offsetHeight * noScale;
+
+  const maxX = window.innerWidth - btnWidth - padding;
+  const maxY = window.innerHeight - btnHeight - padding;
+
+  const x = Math.random() * Math.max(maxX, padding);
+  const y = Math.random() * Math.max(maxY, padding);
+
+  noScale *= 0.85;
+  yesScale *= 1.1;
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+  noBtn.style.transform = `scale(${noScale})`;
+
+  yesBtn.style.transform = `scale(${yesScale})`;
+}
+
+
+
+noBtn.addEventListener("mouseenter", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
+
+yesBtn.addEventListener("click", () => {
+  showPage(2);
+});
+
+noBtn.addEventListener("click", () => {
+  showPage(3);
+  setTimeout(() => showPage(1), 2000);
+});
+
+function showPage(n) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page" + n).classList.add("active");
+}
+const textLines = [
+  { text: "Shailly!", small: false },
+  { text: "Will you uhh… 😅", small: false },
+  { text: "you know be… 🫠", small: false },
+  { text: "I mean like be… 😓", small: false },
+  { text: "my uhhh…", small: false },
+  { text: "valentine??😳", small: true }
+];
+
+const typeTarget = document.getElementById("typeText");
+const buttons = document.getElementById("buttons");
+
+let lineIndex = 0;
+let charIndex = 0;
+let currentSpan = null;
+
+function typeLine() {
+  if (lineIndex >= textLines.length) {
+    buttons.style.opacity = 1;
+    buttons.style.transition = "opacity 1s ease";
+    return;
+  }
+
+  if (charIndex === 0) {
+    currentSpan = document.createElement("span");
+    if (textLines[lineIndex].small) {
+      currentSpan.classList.add("small");
+    }
+    typeTarget.appendChild(currentSpan);
+  }
+
+  const lineText = textLines[lineIndex].text;
+
+  if (charIndex < lineText.length) {
+    currentSpan.textContent += lineText.charAt(charIndex);
+    charIndex++;
+    setTimeout(typeLine, 40);
+  } else {
+    typeTarget.appendChild(document.createElement("br"));
+    lineIndex++;
+    charIndex = 0;
+    setTimeout(typeLine, 500);
+  }
+}
+
+typeLine();
+
+</script>
+
+</body>
+</html>
