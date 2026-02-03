@@ -22,12 +22,15 @@ body {
   align-items: center;
   overflow: hidden;
   color: #b30059;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
 }
 
 .page {
   text-align: center;
   display: none;
   padding: 20px;
+  width: 100%;
+  max-width: 600px;
 }
 
 .page.active {
@@ -50,116 +53,98 @@ body {
   50% { transform: translateY(-8px); }
 }
 
+/* BUTTON CONTAINER - Responsive */
 .buttons {
   margin-top: 30px;
   display: flex;
   justify-content: center;
-  gap: 40px;
+  align-items: center;
+  gap: clamp(15px, 5vw, 40px); /* Responsive gap */
   position: relative;
-  z-index: 5;
+  height: 160px;
+  transition: opacity 1s ease;
+  flex-wrap: wrap; /* Stack on very small screens if needed */
 }
 
+/* BASE BUTTON STYLES - Responsive sizing */
 button {
   font-family: 'Pacifico', cursive;
   border: none;
-  border-radius: 999px; /* 👈 forces perfect pill shape */
-  padding: 16px 36px;
-  font-size: 22px;
+  border-radius: 999px;
+  padding: clamp(12px, 3vw, 16px) clamp(24px, 6vw, 36px); /* Responsive padding */
+  font-size: clamp(18px, 4vw, 22px); /* Responsive font size */
   cursor: pointer;
   white-space: nowrap;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  touch-action: manipulation; /* Better touch response */
+  user-select: none; /* Prevent text selection on touch */
+  -webkit-user-select: none;
 }
 
-
+/* YES BUTTON */
 #yesBtn {
   position: relative;
   z-index: 10;
-}
-
-<button id="noBtn">no sorry 🥺</button>
-<button id="noClone">no sorry 🥺</button>
-
-
-#yesBtn {
-  background: linear-gradient(45deg, #b153d7, #9929ea);
+  background: linear-gradient(45deg, #ff4d6d, #ff758f);
   color: white;
-  box-shadow: 0 0 20px rgba(255, 77, 109, 0.7)}
+  box-shadow: 0 0 20px rgba(255, 77, 109, 0.7);
+}
 
-#yesBtn:hover {
+#yesBtn:hover,
+#yesBtn:active {
   transform: scale(1.1);
-  box-shadow: 0 0 25px rgba(255, 77, 109, 0.9);}
+  box-shadow: 0 0 25px rgba(255, 77, 109, 0.9);
+}
 
+/* NO BUTTON */
 #noBtn {
+  position: relative;
+  z-index: 5;
   background: #f2c1d1;
   color: #6b0036;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
-#yesBtn {
-  position: relative;
-  z-index: 10;
-  background: linear-gradient(45deg, #ff4d6d, #ff758f); /* 🔥 bright gradient */
-  color: white; /* text color */
-  box-shadow: 0 0 20px rgba(255, 77, 109, 0.7); /* glow */
-  border-radius: 999px; /* pill shape */
-  padding: 16px 36px;
-  font-size: 22px;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-
-#noBtn {
-  top: 60px;
-}
-
-.buttons {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  position: relative;
-}
-
-#yesBtn {
-  z-index: 5;
-}
-
-#noBtn {
-  z-index: 5;
-}
-
-#noClone {
+/* When NO button starts dodging, it becomes fixed position */
+#noBtn.dodging {
   position: fixed;
-  left: -999px;
-  top: -999px;
-  z-index: 999;
-  transform: scale(1);
-  background: #f2c1d1;
-  color: #6b0036;
-  border-radius: 999px;
-  padding: 16px 36px;
-  font-size: 22px;
-  cursor: pointer;
-}
-
-
-.buttons {
-  height: 160px;
 }
 
 .gif {
   max-width: 90%;
+  max-height: 300px;
   border-radius: 20px;
   margin-top: 20px;
+  object-fit: contain;
 }
 
-.confetti {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
+/* Mobile-specific adjustments */
+@media (max-width: 600px) {
+  .buttons {
+    height: 120px;
+    gap: 15px;
+  }
+  
+  .main-text {
+    font-size: clamp(24px, 8vw, 48px);
+  }
+  
+  button {
+    min-width: 120px; /* Ensure buttons are tappable on mobile */
+  }
+}
+
+/* Very small screens - stack buttons if needed */
+@media (max-width: 350px) {
+  .buttons {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+  }
+  
+  button {
+    width: 100%;
+    max-width: 250px;
+  }
 }
 </style>
 </head>
@@ -193,7 +178,7 @@ button {
 <!-- PAGE 3 -->
 <div class="page" id="page3">
   <div class="main-text">
-    Oh no you don’t. 😼
+    Oh no you don't. 😼
   </div>
   <img class="gif" src="https://tenor.com/en-IN/view/sus-cat-sus-cat-suspicious-cat-suspicious-gif-14666859353905804588">
 </div>
@@ -205,21 +190,9 @@ const music = document.getElementById("bgMusic");
 
 let noScale = 1;
 let yesScale = 1;
+let isDodging = false;
 
-// Start background music on first mouse move or touch
-function startMusicOnce() {
-  music.volume = 0.10;
-  music.play().catch(() => {});
-  
-  // Remove event listeners after first trigger
-  document.removeEventListener("mousemove", startMusicOnce);
-  document.removeEventListener("touchstart", startMusicOnce);
-}
-
-// Listen for first mouse movement OR touch
-document.addEventListener("mousemove", startMusicOnce, { once: true });
-document.addEventListener("touchstart", startMusicOnce, { once: true });
-
+// Start background music on first interaction
 function startMusicOnce() {
   music.volume = 0;
   music.play().catch(() => {});
@@ -231,14 +204,26 @@ function startMusicOnce() {
   }, 50);
   document.removeEventListener("mousemove", startMusicOnce);
   document.removeEventListener("touchstart", startMusicOnce);
+  document.removeEventListener("click", startMusicOnce);
 }
 
-// NO button dodge
-function moveNo() {
+// Listen for first interaction
+document.addEventListener("mousemove", startMusicOnce, { once: true });
+document.addEventListener("touchstart", startMusicOnce, { once: true });
+document.addEventListener("click", startMusicOnce, { once: true });
+
+// NO button dodge - works for both mouse and touch
+function moveNo(e) {
+  // Prevent default touch behavior
+  if (e.type === 'touchstart') {
+    e.preventDefault();
+  }
+  
   // Switch to fixed positioning ONCE
-  if (noBtn.style.position !== "fixed") {
+  if (!isDodging) {
     const rect = noBtn.getBoundingClientRect();
-    noBtn.style.position = "fixed";
+    isDodging = true;
+    noBtn.classList.add('dodging');
     noBtn.style.left = rect.left + "px";
     noBtn.style.top = rect.top + "px";
   }
@@ -264,24 +249,42 @@ function moveNo() {
   yesBtn.style.transform = `scale(${yesScale})`;
 }
 
-
-
+// Mouse events
 noBtn.addEventListener("mouseenter", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
+
+// Touch events - more reliable on mobile
+noBtn.addEventListener("touchstart", moveNo, { passive: false });
+
+// For very persistent users on mobile who manage to tap it
+noBtn.addEventListener("click", (e) => {
+  if (noScale > 0.3) { // Only dodge if button is still reasonably sized
+    e.preventDefault();
+    showPage(3);
+    setTimeout(() => {
+      showPage(1);
+      // Reset button states
+      isDodging = false;
+      noBtn.classList.remove('dodging');
+      noBtn.style.position = 'relative';
+      noBtn.style.left = '';
+      noBtn.style.top = '';
+      noScale = 1;
+      yesScale = 1;
+      noBtn.style.transform = '';
+      yesBtn.style.transform = '';
+    }, 2000);
+  }
+});
 
 yesBtn.addEventListener("click", () => {
   showPage(2);
-});
-
-noBtn.addEventListener("click", () => {
-  showPage(3);
-  setTimeout(() => showPage(1), 2000);
 });
 
 function showPage(n) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("page" + n).classList.add("active");
 }
+
 const textLines = [
   { text: "Shailly!", small: false },
   { text: "Will you uhh… 😅", small: false },
@@ -301,7 +304,6 @@ let currentSpan = null;
 function typeLine() {
   if (lineIndex >= textLines.length) {
     buttons.style.opacity = 1;
-    buttons.style.transition = "opacity 1s ease";
     return;
   }
 
@@ -333,4 +335,3 @@ typeLine();
 
 </body>
 </html>
-
